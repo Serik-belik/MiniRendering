@@ -11,7 +11,7 @@ public:
 	Shape(unsigned setPer): perim(setPer)
 	{}
 
-	virtual void draw() {
+	virtual void draw(std::string fillStr = " ") {
 		std::cout << "Shape::draw" << std::endl;
 	}
 
@@ -27,7 +27,7 @@ public:
 	Triangle(unsigned setSize) : Shape(3 * setSize), size(setSize)
 	{}
 
-	void draw(char fillChar = ' ')
+	void draw(std::string fillStr = " ") override
 	{
 		std::cout << std::endl;
 		unsigned delta{ 1 };
@@ -44,7 +44,7 @@ public:
 			}
 
 			for (unsigned j{ 0 }; j < delta; ++j)
-				std::cout << ((i == size - 1)?"*":&fillChar);
+				std::cout << ((i == size - 1)?"*":fillStr);
 			delta += 2;
 			std::cout << "*";
 			std::cout << std::endl;
@@ -59,8 +59,8 @@ public:
 	FilledTriangle(unsigned setSize): Triangle(setSize)
 	{}
 
-	void draw()
-	{ Triangle::draw('*'); }
+	void draw(std::string fillStr = " ") override
+	{ Triangle::draw("*"); }
 
 };
 
@@ -73,7 +73,7 @@ public:
 	Rectangle(unsigned height, unsigned width) : Shape(2 * (height + width)), a(height), b(width)
 	{}
 
-	void draw(char fillChar = ' ')
+	void draw(std::string fillStr = " ") override
 	{
 		std::cout << std::endl;
 		for (unsigned i{ 0 }; i < a; ++i)
@@ -82,7 +82,7 @@ public:
 				if (i == 0 || i == a - 1)
 					std::cout << "*";
 				else
-					std::cout << ((j == 0 || j == b - 1)?"*":&fillChar);
+					std::cout << ((j == 0 || j == b - 1)?"*":fillStr);
 			std::cout << std::endl;
 		}
 		std::cout << std::endl;
@@ -95,8 +95,8 @@ public:
 	FilledRectangle(unsigned height, unsigned width): Rectangle(height, width)
 	{}
 
-	void draw()
-	{ Rectangle::draw('*'); }
+	void draw(std::string fillStr = " ") override
+	{ Rectangle::draw("*"); }
 };
 
 
@@ -108,7 +108,7 @@ public:
 	Romb(unsigned setSize): Shape(4 * setSize), size(setSize)
 	{}
 
-	void draw(char fillChar = ' ')
+	void draw(std::string fillStr = " ") override
 	{
 		std::cout << std::endl;
 		unsigned innerWidth{ 1 };
@@ -132,7 +132,7 @@ public:
 			}
 
 			for (unsigned j{ 0 }; j < innerWidth; ++j)
-				std::cout << &fillChar;
+				std::cout << fillStr;
 			if (i < size - 1)
 				innerWidth += 2;
 			else
@@ -152,10 +152,8 @@ public:
 	FilledRomb(unsigned setSize) : Romb(setSize)
 	{}
 
-	void draw()
-	{
-		Romb::draw('*');
-	}
+	void draw(std::string fillStr = " ") override
+	{ Romb::draw("*"); }
 
 };
 
@@ -198,22 +196,36 @@ int main()
 {
 	FilledRectangle r1{ 10, 30 };
 	Rectangle* r2 = &r1;
+	r2->draw();
+	Rectangle rct1{ 10, 50 };
+	rct1.draw();
 
-	//FilledTriangle t1{ 10 };
-	//Triangle& t2 = t1;
+	FilledTriangle t1{ 10 };
+	Triangle& t2 = t1;
+	t2.draw();
+	Triangle tri1{ 6 };
+	tri1.draw();
 
-	//FilledRomb rmb1{ 10 };
-	//Romb& rmb2 = rmb1;
-	//rmb2.draw();
-	//Shape* rmb3 = &rmb1;
+	FilledRomb rmb1{ 10 };
+	Romb& rmb2 = rmb1;
+	rmb2.draw();
+	Shape* rmb3 = &rmb1;
+	Romb rmb4{ 6 };
+	rmb4.draw();
 	//rmb3->draw();
 
 	Canvas cnv;
 	cnv.addFigure(&r1);
+	cnv.addFigure(r2);
+	cnv.addFigure(&t1);
+	cnv.addFigure(&t2);
+	cnv.addFigure(&rmb1);
+	cnv.addFigure(&rmb2);
+	cnv.addFigure(rmb3);
 	cnv.renderAll();
 
-	//Shape s = createShape("Rectangle", 5);
-	//s.draw();
-	//int p = s.perimeter();
-	//std::cout << "Perimeter: " << p << std::endl;
+	Shape s = createShape("Rectangle", 5);
+	s.draw();
+	int p = s.perimeter();
+	std::cout << "Perimeter: " << p << std::endl;
 }
